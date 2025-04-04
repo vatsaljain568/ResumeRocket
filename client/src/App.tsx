@@ -8,6 +8,7 @@ import PortfolioPage from "@/pages/portfolio";
 import HowItWorksPage from "@/pages/how-it-works";
 import ExamplesPage from "@/pages/examples";
 import { ThemeProvider } from "./lib/ThemeContext";
+import { Footer } from "./components/Footer";
 
 function Router() {
   return (
@@ -25,8 +26,11 @@ function App() {
   return (
     <ThemeProvider>
       <QueryClientProvider client={queryClient}>
-        <div className="min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-200">
-          <Router />
+        <div className="min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-200 flex flex-col">
+          <div className="flex-grow">
+            <Router />
+          </div>
+          <Footer />
           <Toaster />
         </div>
       </QueryClientProvider>
