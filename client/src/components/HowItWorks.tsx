@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "wouter";
 
 export function HowItWorks() {
   return (
@@ -83,10 +84,98 @@ export function HowItWorks() {
           </div>
         </div>
 
-        <div className="mt-16 text-center">
-          <div className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-primary hover:bg-indigo-700">
-            <a href="/">Try It Now</a>
+        {/* Detailed process explanation section */}
+        <div className="mt-24">
+          <h3 className="text-2xl font-bold text-gray-900 text-center mb-12">Detailed Process</h3>
+          
+          <div className="bg-white rounded-lg shadow-md overflow-hidden mb-12">
+            <div className="bg-primary text-white p-4">
+              <h4 className="text-xl font-medium">Step 1: Upload Your Resume</h4>
+            </div>
+            <div className="p-6">
+              <div className="prose max-w-none">
+                <p>Our user-friendly upload interface allows you to easily submit your resume for processing. We support multiple file formats to accommodate different resume types:</p>
+                <ul className="list-disc pl-6 mt-4">
+                  <li><strong>PDF documents</strong> - Perfect for preserving formatting and layout</li>
+                  <li><strong>JPG/JPEG images</strong> - If you have a scan or photo of your resume</li>
+                  <li><strong>PNG images</strong> - For high-quality digital images of your resume</li>
+                </ul>
+                <p className="mt-4">The maximum file size is 10MB, which is more than sufficient for most resumes. Our system is designed to handle various resume layouts and styles, from traditional to modern formats.</p>
+                <p className="mt-4">Simply drag and drop your file or click to browse and select from your device. Once selected, you'll see a preview of your file and can proceed to the next step.</p>
+              </div>
+            </div>
           </div>
+          
+          <div className="bg-white rounded-lg shadow-md overflow-hidden mb-12">
+            <div className="bg-primary text-white p-4">
+              <h4 className="text-xl font-medium">Step 2: Automated Processing</h4>
+            </div>
+            <div className="p-6">
+              <div className="prose max-w-none">
+                <p>Once your resume is uploaded, our advanced processing engine goes to work. Here's what happens behind the scenes:</p>
+                <ol className="list-decimal pl-6 mt-4">
+                  <li><strong>Text Extraction</strong> - For PDFs, we use specialized parsing algorithms to extract text while maintaining structural information. For images, we employ optical character recognition (OCR) to convert the visual text into machine-readable data.</li>
+                  <li><strong>Data Classification</strong> - Our system identifies and categorizes different sections of your resume, such as personal information, work experience, education, skills, and projects.</li>
+                  <li><strong>Information Structuring</strong> - The extracted data is organized into a structured format that can be used to build your portfolio website.</li>
+                </ol>
+                <p className="mt-4">This entire process typically takes less than a minute, even for complex resumes. You'll see a progress indicator while the system works, and once complete, you'll be automatically taken to the preview stage.</p>
+              </div>
+            </div>
+          </div>
+          
+          <div className="bg-white rounded-lg shadow-md overflow-hidden">
+            <div className="bg-primary text-white p-4">
+              <h4 className="text-xl font-medium">Step 3: Preview & Customize</h4>
+            </div>
+            <div className="p-6">
+              <div className="prose max-w-none">
+                <p>The final step puts you in control of your portfolio website:</p>
+                <ul className="list-disc pl-6 mt-4">
+                  <li><strong>Review Generated Content</strong> - See exactly how your information will be displayed on your portfolio website, organized into professional sections.</li>
+                  <li><strong>Make Edits</strong> - If needed, you can adjust any details, add missing information, or enhance descriptions. Our intuitive interface makes editing simple and straightforward.</li>
+                  <li><strong>Download or Share</strong> - Once you're satisfied with your portfolio, you can download it or receive a shareable link that you can include in job applications, your email signature, or social media profiles.</li>
+                </ul>
+                <p className="mt-4">Your portfolio website is professionally designed and fully responsive, ensuring it looks great on all devices, from desktops to smartphones. The layout emphasizes your skills and experience, making it easy for potential employers to see your qualifications at a glance.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        {/* FAQ Section */}
+        <div className="mt-24">
+          <h3 className="text-2xl font-bold text-gray-900 text-center mb-8">Frequently Asked Questions</h3>
+          
+          <div className="bg-white rounded-lg shadow-md">
+            <div className="divide-y divide-gray-200">
+              <div className="p-6">
+                <h4 className="text-lg font-medium text-gray-900">Is my resume data secure?</h4>
+                <p className="mt-2 text-gray-600">Yes, we take data security seriously. Your resume information is processed securely and is not shared with third parties. The data is used solely for generating your portfolio website.</p>
+              </div>
+              
+              <div className="p-6">
+                <h4 className="text-lg font-medium text-gray-900">What if my resume has a unique format?</h4>
+                <p className="mt-2 text-gray-600">Our system is designed to handle various resume formats. However, if your resume has a highly unique structure, you may need to make some minor adjustments in the preview stage. The system does its best to extract and organize information logically.</p>
+              </div>
+              
+              <div className="p-6">
+                <h4 className="text-lg font-medium text-gray-900">Can I update my portfolio later?</h4>
+                <p className="mt-2 text-gray-600">Yes, you can return to your portfolio at any time to make updates. Just save your portfolio ID or URL for future reference.</p>
+              </div>
+              
+              <div className="p-6">
+                <h4 className="text-lg font-medium text-gray-900">What file formats work best?</h4>
+                <p className="mt-2 text-gray-600">For the best results, we recommend uploading a PDF file with selectable text. However, our system can also process JPG and PNG images using OCR technology.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-16 text-center">
+          <Link href="/">
+            <a className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-primary hover:bg-indigo-700">
+              Try It Now
+            </a>
+          </Link>
         </div>
       </div>
     </div>
