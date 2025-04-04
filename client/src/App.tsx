@@ -7,6 +7,7 @@ import Home from "@/pages/home";
 import PortfolioPage from "@/pages/portfolio";
 import HowItWorksPage from "@/pages/how-it-works";
 import ExamplesPage from "@/pages/examples";
+import { ThemeProvider } from "./lib/ThemeContext";
 
 function Router() {
   return (
@@ -22,10 +23,14 @@ function Router() {
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <Router />
-      <Toaster />
-    </QueryClientProvider>
+    <ThemeProvider>
+      <QueryClientProvider client={queryClient}>
+        <div className="min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-200">
+          <Router />
+          <Toaster />
+        </div>
+      </QueryClientProvider>
+    </ThemeProvider>
   );
 }
 
