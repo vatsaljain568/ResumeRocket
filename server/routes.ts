@@ -54,55 +54,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       console.log("Extracted data from file:", JSON.stringify(extractedData, null, 2).substring(0, 500));
       
-      // Check if we have enough data to generate a portfolio
-      const minimumRequiredData = extractedData.name || extractedData.email || extractedData.phone;
-      const hasSubstantialData = Object.keys(extractedData).length >= 3;
+      // We want to work only with the extracted data, without adding placeholders
+      // Just use whatever fields we could successfully extract from the resume
       
-      // If we don't have enough data from the extraction, provide basic structure
-      // but still use what we have
-      if (!minimumRequiredData || !hasSubstantialData) {
-        console.log("Extraction didn't yield sufficient data, enhancing with basic structure...");
-        
-        // Get name from filename if not extracted
-        if (!extractedData.name) {
-          const nameFromFile = file.originalname.split('.')[0].replace(/[_-]/g, ' ');
-          extractedData.name = nameFromFile;
-        }
-        
-        // Add basic sections if missing
-        if (!extractedData.title) {
-          extractedData.title = "Professional";
-        }
-        
-        if (!extractedData.about) {
-          extractedData.about = `Portfolio generated from ${file.originalname}`;
-        }
-        
-        if (!extractedData.skills || extractedData.skills.length === 0) {
-          extractedData.skills = ["Professional Skills"];
-        }
-        
-        if (!extractedData.experience || extractedData.experience.length === 0) {
-          extractedData.experience = [
-            {
-              position: "Professional Experience",
-              company: "Most Recent Company",
-              duration: "Recent Period",
-              description: ["Professional responsibilities and achievements"]
-            }
-          ];
-        }
-        
-        if (!extractedData.education || extractedData.education.length === 0) {
-          extractedData.education = [
-            {
-              degree: "Highest Education Level",
-              institution: "Educational Institution",
-              duration: "",
-              description: "Educational background"
-            }
-          ];
-        }
+      // Get name from filename only if we absolutely couldn't extract a name and need one for identification
+      if (!extractedData.name && file.originalname) {
+        const nameFromFile = file.originalname.split('.')[0].replace(/[_-]/g, ' ');
+        extractedData.name = nameFromFile;
+      }
+      
+      // Don't add any generic placeholder content to the portfolio - only use what was actually extracted
+      // This ensures the portfolio shows real data from the resume and has appropriate headings/sections
+      
+      // Log what data we found to help with debugging
+      console.log("Using only extracted data:");
+      for (const [key, value] of Object.entries(extractedData)) {
+        console.log(`- ${key}: ${typeof value === 'object' ? JSON.stringify(value).substring(0, 50) : value}`);
       }
       
       console.log("Final portfolio data:", JSON.stringify(extractedData, null, 2).substring(0, 500));
@@ -180,78 +147,4 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   const httpServer = createServer(app);
   return httpServer;
-}
-
-// Helper function to generate dummy portfolio data for demonstration
-// In a real implementation, this would be replaced by actual data extraction
-function generateDummyPortfolioData(fileName: string): Portfolio {
-  const name = fileName.split('.')[0] || "Jane Doe";
-  
-  return {
-    name: name,
-    title: "Software Engineer",
-    email: "contact@example.com",
-    phone: "(123) 456-7890",
-    location: "San Francisco, CA",
-    website: "https://example.com",
-    about: "Experienced software engineer with a passion for developing innovative solutions. Skilled in JavaScript, React, and Node.js.",
-    experience: [
-      {
-        position: "Senior Software Engineer",
-        company: "TechCorp Inc.",
-        duration: "Jan 2018 - Present",
-        description: [
-          "Led development of the company's flagship product, increasing performance by 40%",
-          "Mentored junior developers and implemented code review processes",
-          "Introduced modern JavaScript frameworks that improved developer productivity"
-        ]
-      },
-      {
-        position: "Web Developer",
-        company: "Innovative Solutions LLC",
-        duration: "Mar 2015 - Dec 2017",
-        description: [
-          "Developed responsive websites for clients across various industries",
-          "Collaborated with design team to implement pixel-perfect UIs",
-          "Optimized existing websites to improve SEO and performance metrics"
-        ]
-      }
-    ],
-    education: [
-      {
-        degree: "Master of Computer Science",
-        institution: "Stanford University",
-        duration: "2013 - 2015",
-        description: "Specialized in Artificial Intelligence and Data Structures"
-      },
-      {
-        degree: "Bachelor of Science in Computer Engineering",
-        institution: "MIT",
-        duration: "2009 - 2013",
-        description: "Graduated with honors, GPA 3.8/4.0"
-      }
-    ],
-    skills: [
-      "JavaScript",
-      "React",
-      "Node.js",
-      "TypeScript",
-      "CSS/SCSS",
-      "GraphQL",
-      "REST APIs",
-      "Responsive Design"
-    ],
-    projects: [
-      {
-        title: "E-commerce Platform",
-        description: "Developed a full-stack e-commerce solution using React, Node.js, and MongoDB. Implemented features like product search, user authentication, and payment processing.",
-        link: "https://example.com/projects/ecommerce"
-      },
-      {
-        title: "Task Management App",
-        description: "Created a productivity tool with drag-and-drop functionality, real-time updates, and team collaboration features using React and Firebase.",
-        link: "https://example.com/projects/taskmanager"
-      }
-    ]
-  };
 }
