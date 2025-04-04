@@ -1,7 +1,8 @@
-import type { Express, Request, Response } from "express";
+import type { Express, Request, Response, NextFunction } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import multer from "multer";
+import type { FileFilterCallback } from "multer";
 import { extractDataFromPDF } from "./pdf-parser";
 import { extractDataFromImage } from "./image-parser";
 import { portfolioSchema, type Portfolio } from "@shared/schema";
@@ -22,7 +23,7 @@ const updatePortfolioSchema = z.object({
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Upload and process resume
-  app.post("/api/resume/upload", upload.single("file"), async (req: Request, res: Response) => {
+  app.post("/api/resume/upload", upload.single("file"), async (req: Request & { file?: Express.Multer.File }, res: Response) => {
     try {
       if (!req.file) {
         return res.status(400).json({ message: "No file uploaded" });
@@ -41,18 +42,70 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Extract data from file based on type
       let extractedData: Partial<Portfolio> = {};
       
+      console.log(`Processing ${file.originalname} (${file.mimetype})...`);
+      
       if (file.mimetype === "application/pdf") {
+        console.log("Extracting data from PDF...");
         extractedData = await extractDataFromPDF(file.buffer);
       } else if (file.mimetype.startsWith("image/")) {
+        console.log(`Extracting data from image (${file.mimetype})...`);
         extractedData = await extractDataFromImage(file.buffer, file.mimetype);
       }
       
-      // For demo purposes, prepare some sample data if we don't have real extraction
-      // In a real implementation, this would come from the PDF/image parser
-      if (Object.keys(extractedData).length === 0) {
-        const fileName = file.originalname;
-        extractedData = generateDummyPortfolioData(fileName);
+      console.log("Extracted data from file:", JSON.stringify(extractedData, null, 2).substring(0, 500));
+      
+      // Check if we have enough data to generate a portfolio
+      const minimumRequiredData = extractedData.name || extractedData.email || extractedData.phone;
+      const hasSubstantialData = Object.keys(extractedData).length >= 3;
+      
+      // If we don't have enough data from the extraction, provide basic structure
+      // but still use what we have
+      if (!minimumRequiredData || !hasSubstantialData) {
+        console.log("Extraction didn't yield sufficient data, enhancing with basic structure...");
+        
+        // Get name from filename if not extracted
+        if (!extractedData.name) {
+          const nameFromFile = file.originalname.split('.')[0].replace(/[_-]/g, ' ');
+          extractedData.name = nameFromFile;
+        }
+        
+        // Add basic sections if missing
+        if (!extractedData.title) {
+          extractedData.title = "Professional";
+        }
+        
+        if (!extractedData.about) {
+          extractedData.about = `Portfolio generated from ${file.originalname}`;
+        }
+        
+        if (!extractedData.skills || extractedData.skills.length === 0) {
+          extractedData.skills = ["Professional Skills"];
+        }
+        
+        if (!extractedData.experience || extractedData.experience.length === 0) {
+          extractedData.experience = [
+            {
+              position: "Professional Experience",
+              company: "Most Recent Company",
+              duration: "Recent Period",
+              description: ["Professional responsibilities and achievements"]
+            }
+          ];
+        }
+        
+        if (!extractedData.education || extractedData.education.length === 0) {
+          extractedData.education = [
+            {
+              degree: "Highest Education Level",
+              institution: "Educational Institution",
+              duration: "",
+              description: "Educational background"
+            }
+          ];
+        }
       }
+      
+      console.log("Final portfolio data:", JSON.stringify(extractedData, null, 2).substring(0, 500));
       
       // Store the portfolio data
       const portfolio = await storage.createPortfolio({
